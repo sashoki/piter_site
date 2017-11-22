@@ -1,0 +1,24 @@
+{% extends "index.html" %}
+{% load embed_video_tags %}
+{% load mptt_tags %}
+{% load i18n mptt_tags %}
+
+{% block content %}
+        <h2>Автор: {{ author_s }}</h2>
+
+        {% if author_s.author_image %}
+            <p><img class="thumbnail" src="{{ MEDIA_URL }}{{ author_s.author_image.url }}" width="250" height="15"/></p>
+        {% endif %}
+
+    {% for article in articles %}
+        <h4><a href="/articles/get/{{ article.id }}/">{{ article.article_title }}</a></h4>
+        <ul class="right"> <h4>Категория: {{ article.category }}</h4></ul>
+            {% if article.article_img %}
+                <p><img class="thumbnail" src="{{ MEDIA_URL }}{{ article.article_img.url }}"></p>
+            {% endif %}
+        <h6>Дата публикации: {{ article.article_date }}</h6>
+        <p>{% autoescape off %}{{ article.article_text_min }}{% endautoescape off %}</p>
+    <hr>
+    {% endfor %}
+
+{% endblock %}

@@ -1,0 +1,49 @@
+{% extends 'index.html' %}
+{% load staticfiles %}
+{% load i18n mptt_tags %}
+
+{% block articles %}
+    {% for article in articles %}
+        <div class="blog-post">
+            <h3><a href="/articles/get/{{ article.id }}/">{{ article.article_title }}</a></h3>
+            <h5><small>{{ article.article_date }}</small></h5>
+            {% if article.article_img %}
+                <p><img class="thumbnail" src="{{ MEDIA_URL }}{{ article.article_img.url }}"></p>
+            {% else %}
+                <img class="thumb" src="http://placehold.it/850x350">
+            {% endif %}
+
+            <p>{% autoescape off %}{{ article.article_text_min }}{% endautoescape off %}</p>
+            <div class="callout">
+                <ul class="menu simple">
+                    <li><a href="/author/{{ article.author_id }}/">Author: {{ article.author }}</a></li>
+                    <li><p><a href="/articles/addlike/{{ article.id }}/"><img src="{% static 'images/like.jpg' %}" width="25px" height="25px"></a>{{ article.article_like }}</p></li>
+                </ul>
+            </div>
+        </div>
+
+    {% endfor %}
+                <div class="row" columns>
+                    <div class="large-8 large-centered columns">
+                        <ul class="pagination" role="navigation" aria-label="Pagination">
+                            {% if articles.has_previous %}
+                                <li class="disabled"><a href="/page/{{ articles.previous_page_number }}/">Previous</a></li>
+                            {% else %}
+                                <li class="disabled"><a href="#">Previous</a></li>
+                            {% endif %}
+                            {% for page in articles.paginator.page_range %}
+                                {% if page == articles.number %}
+                                    <li class="current"><span class="show-for-sr"><a href="/page/{{ page }}/" ></a></span>{{ page }}</li>
+                                {% else %}
+                                    <li><a href="/page/{{ page }}/" aria-label="{{ page }}">{{ page }}</a></li>
+                                {% endif %}
+                            {% endfor %}
+                            {% if articles.has_next %}
+                                <li> <a href="/page/{{ articles.next_page_number }}/" aria-label="Next page">Next</a></li>
+                            {% else %}
+                                <li><a href="#" aria-label="Next page">Next</a></li>
+                            {% endif %}
+                        </ul>
+                     </div>
+                </div>
+{% endblock %}

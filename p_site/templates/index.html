@@ -1,0 +1,150 @@
+{% load staticfiles %}
+{% load i18n mptt_tags %}
+
+<!DOCTYPE html>
+<!--[if lt IE 7]><html lang="ru" class="lt-ie9 lt-ie8 lt-ie7"><![endif]-->
+<!--[if IE 7]><html lang="ru" class="lt-ie9 lt-ie8"><![endif]-->
+<!--[if IE 8]><html lang="ru" class="lt-ie9"><![endif]-->
+<!--[if gt IE 8]><!-->
+<html lang="ru">
+<!--<![endif]-->
+<head>
+	<title>Educational materials</title>
+    <link rel="stylesheet" href="{% static 'css/foundation.min.css' %}">
+	<!--<link rel="stylesheet" href="http://dhbhdrzi4tiry.cloudfront.net/cdn/sites/foundation.min.css">
+	<link href='http://cdnjs.cloudflare.com/ajax/libs/foundicons/3.0.0/foundation-icons.css' rel='stylesheet' type='text/css'>
+    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.5/jquery.min.js"></script>-->
+    <script src="{% static 'libs/jquery/jquery-1.11.1.min.js' %}"></script>
+
+
+    <meta name="description" content="" />
+	<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<link rel="shortcut icon" href="favicon.png" />
+	<link rel="stylesheet" href="{% static 'libs/font-awesome-4.2.0/css/font-awesome.min.css' %}">
+	<link rel="stylesheet" href="{% static 'libs/fancybox/jquery.fancybox.css' %}">
+	<link rel="stylesheet" href="{% static 'libs/owl-carousel/owl.carousel.css' %}">
+	<link rel="stylesheet" href="{% static 'libs/countdown/jquery.countdown.css' %}">
+	<link rel="stylesheet" href="{% static 'css/fonts.css' %}">
+	<link rel="stylesheet" href="{% static 'css/media.css' %}">
+
+	<script>
+      (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+      (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+      m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+      })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+      ga('create', 'UA-2195009-2', 'auto');
+      ga('send', 'pageview');
+
+      ga('create', 'UA-2195009-27', 'auto', {name: "foundation"});
+      ga('foundation.send', 'pageview');
+
+    </script>
+
+<body>
+    <div class="top-bar">
+        <div class="top-bar-left">
+            <ul class="menu">
+				<li class="menu-text">Educational materials</li>
+            </ul>
+        </div>
+
+        <div class="top-bar-right">
+            <ul class="menu">
+                <li><a href="/home/">ГЛАВНАЯ</a></li>
+                <li><a href="/">БЛОГ</a></li>
+                <li><a href="/admin/">АДМИН</a></li>
+                <li><a href="/auth/register/">РЕГИСТРАЦИЯ</a></li>
+                <li>{% if username %}
+                        <a href="/auth/logout/">Выход({{ username }})</a>
+                    {% else %}
+                        <a href="/auth/login/">Вход</a>
+                    {% endif %}
+                </li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="callout large primary">
+        <div class="row column text-center">
+			<h1>Educational materials to Python/Django</h1>
+		</div>
+	</div>
+
+	<div class="row" id="content">
+                <div class="medium-8 columns">
+                    {% block articles %}{% endblock %}
+                    {% block article %}{% endblock %}
+                    {% block article_cat %}{% endblock %}
+                    {% block login %}{% endblock %}
+                    {% block register %}{% endblock %}
+                    {% block content %}{% endblock %}
+                </div>
+
+
+
+            <div class="medium-3 columns" data-sticky-container>
+                <div class="sticky" data-sticky data-anchor="content">
+                    <ul class="menu soc_buttons">
+                        <li><a href="#"><i class="fa fa-vk" aria-hidden="true"></i></a></li>
+                        <li><a href="#"><i class="fa fa-facebook-square" aria-hidden="true"></i></a></li>
+                        <li><a href="#"><i class="fa fa-youtube-square" aria-hidden="true"></i></a></li>
+                    </ul>
+
+                    <ul class="menu">
+                        <form action="/keyword/" method="post">
+                           {% csrf_token %}
+                                {{ form_keywords }}
+                                <input type="submit" class="button" value="Поиск">
+                        </form>
+                    </ul>
+
+                    <p id="menu">Categories:</p>
+                        <ul class="project-root" id="list">
+							{% recursetree projects %}
+								<li>
+									<a href="/category/get/{{ node.id }}/" title="{% blocktrans with project=node %} Show all entries in {{ project }}{% endblocktrans %}">{{ node }}</a>
+							{% if not node.is_leaf_node %}
+									<ul class="project-children project-{{ node.slug }}">
+									{{ children }}
+									</ul>
+							{% endif %}
+								</li>
+							{% endrecursetree %}
+							{% if not projects %}
+								<li>
+									{% trans "Not projects yet." %}
+								</li>
+							{% endif %}
+						</ul>
+
+                    <p id="menu1">Authors:</p>
+                        <ul id="list1">
+                            {% for author in authors %}
+                                <li><a href="/author/{{ author.id }}/">{{ author }}</a></li>
+                            {% endfor %}
+
+                        </ul>
+                </div>
+            </div>
+    </div>
+
+    <footer>
+        <div class="top-bar text-center">
+            <h6>2016 &copy All rights reserved by PITER</h6>
+        </div>
+    </footer>
+<script src="{% static 'js/piter_js.js' %}"></script>
+<script src="bower_components/jquery/dist/jquery.js?hash=ef84e29a5b44f41910594b8b5aa2b30a"></script>
+<script src="bower_components/what-input/what-input.js?hash=0c7403b1a0ffe96d1d7e5677508b50da"></script>
+<script src="bower_components/foundation-sites/dist/foundation.js?hash=5fbcda3d2a490afda6bfc2644c2cc988"></script>
+<script src="js/app.js?hash=f73a84303209b95c8fedd1c4ca5de1c7"></script>
+<script src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
+<script src="http://dhbhdrzi4tiry.cloudfront.net/cdn/sites/foundation.js"></script>
+<script>
+      $(document).foundation();
+</script>
+<script type="text/javascript" src="https://intercom.zurb.com/scripts/zcom.js"></script>
+</body>
+</html>
